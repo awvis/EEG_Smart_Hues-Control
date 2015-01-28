@@ -5,6 +5,8 @@ package de.unibi.isy.eeg.eegrsbgateway;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import de.citec.dal.DALService;
+import de.citec.dal.DeviceViewerFrame;
 import de.citec.dal.hal.al.AmbientLightRemote;
 import de.citec.dal.hal.al.RollershutterRemote;
 import de.citec.dal.util.DALException;
@@ -35,13 +37,13 @@ public class RSB_Sender_HA {
     /**
      * Decision making limit values for home automation
      */
-    public final static int LIMIT_0 = 0;
-    public final static int LIMIT_1 = 10;
-    public final static int LIMIT_2 = 20;
-    public final static int LIMIT_3 = 30;
-    public final static int LIMIT_4 = 40;
-    public final static int LIMIT_5 = 50;
-    public final static int LIMIT_6 = 60;
+    public final static double LIMIT_0 = 0;
+    public final static double LIMIT_1 = 10;
+    public final static double LIMIT_2 = 20;
+    public final static double LIMIT_3 = 30;
+    public final static double LIMIT_4 = 40;
+    public final static double LIMIT_5 = 50;
+    public final static double LIMIT_6 = 60;
 
     private final AmbientLightRemote lightsControl;
     
@@ -51,6 +53,10 @@ public class RSB_Sender_HA {
     public String filepath2 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
    
     public RSB_Sender_HA() {
+        
+       
+
+    
         lightsControl = new AmbientLightRemote();
        
 
@@ -80,13 +86,13 @@ public class RSB_Sender_HA {
      * Integer EEG value after processing of EEG data for decision And its set
      * and get data Functions
      */
-    private int EEG_Value;
+    private double EEG_Value;
 
     public void setEEG_Value(Integer Val) {
         EEG_Value = Val;
     }
 
-    public int getEEG_Value() {
+    public double getEEG_Value() {
         return EEG_Value;
     }
 
@@ -162,7 +168,7 @@ Process p = null;
     /**
      * Scope for the Intelligent apartment automation system
      */
-    String SCOPE_LIGHTS = "/home/wardrobe/ambientlight/hallway_0/";
+    String SCOPE_LIGHTS = "/home/amilab/ambientlight/testlight/";
   
 
     /**

@@ -1,26 +1,39 @@
 package de.unibi.isy.eeg.eegrsbgateway;
 
+import de.citec.dal.DALService;
+import de.citec.dal.DeviceViewerFrame;
+import de.citec.dal.data.Location;
+import de.citec.dal.exception.RSBBindingException;
+import de.citec.dal.hal.devices.philips.PH_Hue_E27Controller;
+import de.citec.dal.service.DALRegistry;
+import de.citec.jps.core.JPService;
+import de.citec.jps.properties.JPHardwareSimulationMode;
 import rsb.AbstractEventHandler;
 import rsb.Event;
 import rsb.Factory;
 import rsb.Listener;
-import rsb.transport.*;
-import java.lang.Runtime;
-import rsb.patterns.EventCallback;
-import rsb.patterns.LocalServer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class RSB_EEG_Reciver extends AbstractEventHandler  {
+public class RSB_EEG_Reciver extends AbstractEventHandler {
+
+    public RSB_EEG_Reciver() {
+        new DALService(new TestDeviceInitilizer()).activate();
+        new DeviceViewerFrame().setVisible(true);
+
+    }
 
     RSB_Sender_HA ha;
 
     public Object EEG_Value;
-    public Integer Val;
+    public Double Val;
 
+    @Override
     public void handleEvent(final Event event) {
         EEG_Value = event.getData();
 
         // convert the object to Integer for the function
-        Val = Integer.valueOf((String) EEG_Value);
+        Val = Double.valueOf((String) EEG_Value);
 
         System.out.println("Received Viswa " + Val);
         // Send Value to the other side
@@ -33,36 +46,34 @@ public class RSB_EEG_Reciver extends AbstractEventHandler  {
             System.out.println("Received" + Val);
         } catch (Throwable e) {
             System.out.println("Error in sending to Home Automation" + e);
-        } 
+        }
 
-    } 
-   
-        /**
+    }
+
+    /**
      * The scope for EEG Integer Value
      */
-    public static String scope = "/eeg/result";
+    public static String scope = "/UBiCI/string/alphabeta/";
     public static String filepath3 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
-    
+
     public static void main(final String[] args) throws Throwable {
-       
-        Process p = null; 
-            // execute the main screen
-         try
-    {
-        p = Runtime.getRuntime().exec("java -jar " + filepath3);
-    }
-    finally
-    {
-        if (p != null)
-        {
-           p.getOutputStream().close();
-           p.getInputStream().close();
-           p.getErrorStream().close();
+        //Device code import        
+        JPService.setApplicationName("DeviceManager");
+        JPService.registerProperty(JPHardwareSimulationMode.class);
+        JPService.parseAndExitOnError(args);
+        Process p = null;
+        // execute the main screen
+        try {
+            p = Runtime.getRuntime().exec("java -jar " + filepath3);
+        } finally {
+            if (p != null) {
+                p.getOutputStream().close();
+                p.getInputStream().close();
+                p.getErrorStream().close();
+            }
         }
-    }
-       
- 
-         // Get a factory instance to create new RSB objects.
+
+        // Get a factory instance to create new RSB objects.
         final Factory factory = Factory.getInstance();
 
         // Create a Listener instance on the specified scope that will
@@ -78,12 +89,25 @@ public class RSB_EEG_Reciver extends AbstractEventHandler  {
 
             // Wait for events.
             while (true) {
-                Thread.sleep(1);
+                Thread.sleep(100);
             }
         } finally {
             // Deactivate the listener after use.
             listener.deactivate();
-        } 
+        }
+    }
+
+    class TestDeviceInitilizer extends DALService.DeviceInitializer {
+
+        @Override
+        public void initDevices(DALRegistry registry) {
+            Location amilab = new Location("amilab");
+            try {
+                registry.register(new PH_Hue_E27Controller("PH_Hue_E27_100", "testlight", amilab));
+            } catch (RSBBindingException ex) {
+                Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

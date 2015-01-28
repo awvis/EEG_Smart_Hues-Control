@@ -46,7 +46,7 @@ public class RSB_EEG_Sender {
             //String val = Integer.toString(value);
             //Object val = (Object)value;
         
-  String value = "55";  
+  String value = "35";  
   informer.send(value);
         // As there is no explicit removal model in java, always manually
         // deactivate the informer if it is not needed anymore
