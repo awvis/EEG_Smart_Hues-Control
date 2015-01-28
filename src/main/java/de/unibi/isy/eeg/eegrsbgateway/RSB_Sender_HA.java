@@ -33,20 +33,6 @@ public class RSB_Sender_HA {
     public final static Color COLOR_5 = Color.YELLOW;
 
     /**
-     * The Object for RST for Window shutter of the Intelligent Apartment
-     */
-    private float window;
-    /**
-     * the values of Window for different states
-     */
-    public final static float WINDOW_0 = 0;
-    public final static float WINDOW_1 = 20;
-    public final static float WINDOW_2 = 40;
-    public final static float WINDOW_3 = 60;
-    public final static float WINDOW_4 = 80;
-    public final static float WINDOW_5 = 100;
-
-    /**
      * Decision making limit values for home automation
      */
     public final static int LIMIT_0 = 0;
@@ -136,7 +122,7 @@ public class RSB_Sender_HA {
         }
         if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_5) {
             System.out.println("Received event ");
-Process p = null; 
+         Process p = null; 
             // execute the main screen
          try
     {
