@@ -13,15 +13,10 @@ import rsb.Event;
 import rsb.Factory;
 import rsb.Listener;
 import java.util.logging.Level;
+import java.lang.Double;
 import java.util.logging.Logger;
 
 public class RSB_EEG_Reciver extends AbstractEventHandler {
-
-    public RSB_EEG_Reciver() {
-        new DALService(new TestDeviceInitilizer()).activate();
-        new DeviceViewerFrame().setVisible(true);
-
-    }
 
     RSB_Sender_HA ha;
 
@@ -30,6 +25,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
 
     @Override
     public void handleEvent(final Event event) {
+         
         EEG_Value = event.getData();
 
         // convert the object to Integer for the function
@@ -53,18 +49,25 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
     /**
      * The scope for EEG Integer Value
      */
-    public static String scope = "/UBiCI/string/alphabeta/";
+   public static String scope = "/UBiCI/string/alphabeta/";
+   //  public static String scope = "/eeg/result";
     public static String filepath3 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
-
+       
     public static void main(final String[] args) throws Throwable {
         //Device code import        
         JPService.setApplicationName("DeviceManager");
         JPService.registerProperty(JPHardwareSimulationMode.class);
         JPService.parseAndExitOnError(args);
         Process p = null;
+        eeg n = new eeg();
+        
+        
+        
+
         // execute the main screen
         try {
             p = Runtime.getRuntime().exec("java -jar " + filepath3);
+            
         } finally {
             if (p != null) {
                 p.getOutputStream().close();
@@ -73,6 +76,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
             }
         }
 
+                
         // Get a factory instance to create new RSB objects.
         final Factory factory = Factory.getInstance();
 
@@ -89,7 +93,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
 
             // Wait for events.
             while (true) {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
         } finally {
             // Deactivate the listener after use.
@@ -97,7 +101,17 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
         }
     }
 
-    class TestDeviceInitilizer extends DALService.DeviceInitializer {
+
+
+}
+class eeg{
+  public eeg(){
+      new DALService(new eeg.DeviceInitilizer()).activate();
+        new DeviceViewerFrame().setVisible(true);
+        
+
+  }
+ class DeviceInitilizer extends DALService.DeviceInitializer {
 
         @Override
         public void initDevices(DALRegistry registry) {
@@ -108,6 +122,5 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
                 Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
+    } 
 }
