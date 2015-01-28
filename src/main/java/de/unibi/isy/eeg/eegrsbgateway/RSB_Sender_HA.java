@@ -58,21 +58,21 @@ public class RSB_Sender_HA {
     public final static int LIMIT_6 = 60;
 
     private final AmbientLightRemote lightsControl;
-    private final RollershutterRemote windowControl;
+    
 
     //external jar filepaths
-    public String filepath1 = "/Users/viswa/Documents/Processing/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
-    public String filepath2 = "/Users/viswa/Documents/Processing/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
+    public String filepath1 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
+    public String filepath2 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
    
     public RSB_Sender_HA() {
         lightsControl = new AmbientLightRemote();
-        windowControl = new RollershutterRemote();
+       
 
         lightsControl.init(new Scope(SCOPE_LIGHTS));
-        windowControl.init(new Scope(SCOPE_WINDOW));
+      
 
         lightsControl.activate();
-        windowControl.activate();
+       
         lightsControl.addObserver(new Observer<AmbientLightType.AmbientLight>() {
 
             @Override
@@ -86,8 +86,9 @@ public class RSB_Sender_HA {
          } catch (DALException ex) {
          Logger.getLogger(RSB_Sender_HA.class.getName()).log(Level.SEVERE, null, ex);
          } */
-
     }
+
+   
 
     /**
      * Integer EEG value after processing of EEG data for decision And its set
@@ -115,22 +116,22 @@ public class RSB_Sender_HA {
            
         if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_1) {
             System.out.println("Received event Light/Shutter Event 1");
-            window = WINDOW_1;
+           
             light = COLOR_0;
         }
         if (EEG_Value >= LIMIT_1 && EEG_Value < LIMIT_2) {
             System.out.println("Received event Light/Shutter Event 2");
-            window = WINDOW_1;
+            
             light = COLOR_1;
         }
         if (EEG_Value >= LIMIT_2 && EEG_Value < LIMIT_3) {
             System.out.println("Received event Light/Shutter Event 3");
-            window = WINDOW_2;
+           
             light = COLOR_2;
         }
         if (EEG_Value >= LIMIT_3 && EEG_Value < LIMIT_4) {
             System.out.println("Received event Light/Shutter Event 4");
-            window = WINDOW_3;
+           
             light = COLOR_3;
         }
         if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_5) {
@@ -176,7 +177,7 @@ Process p = null;
      * Scope for the Intelligent apartment automation system
      */
     String SCOPE_LIGHTS = "/home/wardrobe/ambientlight/hallway_0/";
-    String SCOPE_WINDOW = "/example/ll";
+  
 
     /**
      * Function to send data via RSB to Automate Intelligent apartment
@@ -189,7 +190,7 @@ Process p = null;
         // Get a factory instance to create RSB objects.
         //brightness
         lightsControl.setColor(light);
-        windowControl.setPosition(window);
+       
 
     }
 

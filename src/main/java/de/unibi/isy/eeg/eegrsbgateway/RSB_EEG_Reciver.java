@@ -41,7 +41,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler  {
      * The scope for EEG Integer Value
      */
     public static String scope = "/eeg/result";
-    public static String filepath3 = "/Users/viswa/Documents/Processing/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
+    public static String filepath3 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
     
     public static void main(final String[] args) throws Throwable {
        
