@@ -53,25 +53,19 @@ public class RSB_Sender_HA {
     public final static double LIMIT_6 = 1.30;
 
     private final AmbientLightRemote lightsControl;
-    
 
     //external jar filepaths
-    public String filepath1 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
-    public String filepath2 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
-   
+    public String filepath1 = "~/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
+    public String filepath2 = "~/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
+
     public RSB_Sender_HA() {
-        
-       
-       
-    
+
         lightsControl = new AmbientLightRemote();
-       
 
         lightsControl.init(new Scope(SCOPE_LIGHTS));
-      
 
         lightsControl.activate();
-       
+
         lightsControl.addObserver(new Observer<AmbientLightType.AmbientLight>() {
 
             @Override
@@ -86,9 +80,6 @@ public class RSB_Sender_HA {
          Logger.getLogger(RSB_Sender_HA.class.getName()).log(Level.SEVERE, null, ex);
          } */
     }
-    
-    
-   
 
     /**
      * Integer EEG value after processing of EEG data for decision And its set
@@ -113,62 +104,54 @@ public class RSB_Sender_HA {
      * @throws de.citec.dal.util.DALException
      */
     public void decision() throws IOException, InterruptedException, RSBException, DALException {
-           
+
         if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_1) {
             System.out.println("Received event Light/Shutter Event 1");
-           
+
             light = COLOR_0;
         }
         if (EEG_Value >= LIMIT_1 && EEG_Value < LIMIT_2) {
             System.out.println("Received event Light/Shutter Event 2");
-            
+
             light = COLOR_1;
         }
         if (EEG_Value >= LIMIT_2 && EEG_Value < LIMIT_3) {
             System.out.println("Received event Light/Shutter Event 3");
-           
+
             light = COLOR_2;
         }
         if (EEG_Value >= LIMIT_3 && EEG_Value < LIMIT_4) {
             System.out.println("Received event Light/Shutter Event 4");
-           
+
             light = COLOR_3;
         }
         if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_5) {
             System.out.println("Received event ");
-         Process p = null; 
+            Process p = null;
             // execute the main screen
-         try
-    {
-        p = Runtime.getRuntime().exec("java -jar " + filepath1);
-    }
-    finally
-    {
-        if (p != null)
-        {
-           p.getOutputStream().close();
-           p.getInputStream().close();
-           p.getErrorStream().close();
-        }
-    }
+            try {
+                p = Runtime.getRuntime().exec("java -jar " + filepath1);
+            } finally {
+                if (p != null) {
+                    p.getOutputStream().close();
+                    p.getInputStream().close();
+                    p.getErrorStream().close();
+                }
+            }
         }
         if (EEG_Value >= LIMIT_5 && EEG_Value < LIMIT_6) {
             System.out.println("Received event ");
-Process p = null; 
+            Process p = null;
             // execute the main screen
-         try
-    {
-        p = Runtime.getRuntime().exec("java -jar " + filepath2);
-    }
-    finally
-    {
-        if (p != null)
-        {
-           p.getOutputStream().close();
-           p.getInputStream().close();
-           p.getErrorStream().close();
-        }
-    }
+            try {
+                p = Runtime.getRuntime().exec("java -jar " + filepath2);
+            } finally {
+                if (p != null) {
+                    p.getOutputStream().close();
+                    p.getInputStream().close();
+                    p.getErrorStream().close();
+                }
+            }
         }
         sendData();
     }
@@ -177,7 +160,6 @@ Process p = null;
      * Scope for the Intelligent apartment automation system
      */
     String SCOPE_LIGHTS = "/home/amilab/ambientlight/testlight/";
-  
 
     /**
      * Function to send data via RSB to Automate Intelligent apartment
@@ -190,7 +172,6 @@ Process p = null;
         // Get a factory instance to create RSB objects.
         //brightness
         lightsControl.setColor(light);
-       
 
     }
 
