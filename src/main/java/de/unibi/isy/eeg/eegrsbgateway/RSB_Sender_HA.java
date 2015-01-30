@@ -59,7 +59,8 @@ public class RSB_Sender_HA {
     public String filepath1 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
     public String filepath2 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
    
-
+    public static boolean is_running1 = false;
+    public static boolean is_running2 = false;
 
     public RSB_Sender_HA() {
 
@@ -133,8 +134,10 @@ public class RSB_Sender_HA {
             Process p = null;
             // execute the main screen
             try {
+                if(!is_running1){
                 p = Runtime.getRuntime().exec("java -jar " + filepath1);
-            } finally {
+               is_running1 = true;
+            } }finally {
                 if (p != null) {
                     p.getOutputStream().close();
                     p.getInputStream().close();
@@ -147,8 +150,10 @@ public class RSB_Sender_HA {
             Process p = null;
             // execute the main screen
             try {
+                 if(!is_running2){
                 p = Runtime.getRuntime().exec("java -jar " + filepath2);
-            } finally {
+                 is_running1 = true;
+            } }finally {
                 if (p != null) {
                     p.getOutputStream().close();
                     p.getInputStream().close();
