@@ -45,10 +45,10 @@ public class RSB_Sender_HA {
      * Decision making limit values for home automation
      */
     public final static double LIMIT_0 = 0.70;
-    public final static double LIMIT_1 = 0.80;
+    public final static double LIMIT_1 = 0.80; //0.7 - 1.0 sleep
     public final static double LIMIT_2 = 0.90;
     public final static double LIMIT_3 = 1.00;
-    public final static double LIMIT_4 = 1.10;
+    public final static double LIMIT_4 = 1.10; // 1.0 1.3 active
     public final static double LIMIT_5 = 1.20;
     public final static double LIMIT_6 = 1.30;
 
@@ -56,8 +56,8 @@ public class RSB_Sender_HA {
     
 
     //external jar filepaths
-    public String filepath1 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
-    public String filepath2 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
+    public String filepath1 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
+    public String filepath2 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
    
     public RSB_Sender_HA() {
         

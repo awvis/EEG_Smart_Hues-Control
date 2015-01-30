@@ -51,7 +51,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
      */
    public static String scope = "/UBiCI/string/alphabeta/";
    //  public static String scope = "/eeg/result";
-    public static String filepath3 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
+    public static String filepath3 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
        
     public static void main(final String[] args) throws Throwable {
         //Device code import        
@@ -93,7 +93,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
 
             // Wait for events.
             while (true) {
-                Thread.sleep(1000);
+                Thread.sleep(5000);
             }
         } finally {
             // Deactivate the listener after use.
