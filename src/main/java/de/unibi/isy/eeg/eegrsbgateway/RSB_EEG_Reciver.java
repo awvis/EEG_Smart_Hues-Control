@@ -14,6 +14,9 @@ import rsb.Factory;
 import rsb.Listener;
 import java.util.logging.Level;
 import java.lang.Double;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class RSB_EEG_Reciver extends AbstractEventHandler {
@@ -22,14 +25,36 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
 
     public Object EEG_Value;
     public Double Val;
+    private double currentAverage = 0d;
+    private final List<Double> vals = Collections
+        .synchronizedList(new ArrayList<Double>());
 
     @Override
     public void handleEvent(final Event event) {
+        
+        // average
+        
 
         EEG_Value = event.getData();
 
         // convert the object to Integer for the function
         Val = Double.valueOf((String) EEG_Value);
+/*
+try {
+    synchronized (this.vals) {
+        this.vals.add(Val);
+        this.currentAverage = 0d;
+
+        for (Double Val : this.vals) {
+            this.currentAverage += Val;       
+        }
+
+        this.currentAverage /= this.vals.size();
+    }}finally{
+            System.out.println("Average");
+        } */
+
+
 
         System.out.println("Received Viswa " + Val);
         // Send Value to the other side
@@ -44,7 +69,9 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
             System.out.println("Error in sending to Home Automation" + e);
         }
 
-    }
+    } 
+    
+
 
     /**
      * The scope for EEG Integer Value
@@ -92,7 +119,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
 
             // Wait for events.
             while (true) {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             }
         } finally {
             // Deactivate the listener after use.

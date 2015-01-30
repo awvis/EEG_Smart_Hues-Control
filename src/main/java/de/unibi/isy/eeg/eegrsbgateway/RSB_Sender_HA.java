@@ -45,12 +45,12 @@ public class RSB_Sender_HA {
      * Decision making limit values for home automation
      */
     public final static double LIMIT_0 = 0.70;
-    public final static double LIMIT_1 = 0.80; //0.7 - 1.0 sleep
-    public final static double LIMIT_2 = 0.90;
-    public final static double LIMIT_3 = 1.00;
-    public final static double LIMIT_4 = 1.10; // 1.0 1.3 active
-    public final static double LIMIT_5 = 1.20;
-    public final static double LIMIT_6 = 1.30;
+    public final static double LIMIT_1 = 0.99; //0.7 - 1.0 sleep
+    public final static double LIMIT_2 = 1.00;
+    public final static double LIMIT_3 = 1.22;
+    public final static double LIMIT_4 = 1.23; // 1.0 1.3 active
+    public final static double LIMIT_5 = 1.25;
+    public final static double LIMIT_6 = 2.30;
 
     private final AmbientLightRemote lightsControl;
 
@@ -109,16 +109,42 @@ public class RSB_Sender_HA {
      */
     public void decision() throws IOException, InterruptedException, RSBException, DALException {
 
-        if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_1) {
-            System.out.println("Received event Light/Shutter Event 1");
+        if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_2) {
+            //yellow
+            
+        light = COLOR_0;
+            // total sleep state: so from current color change to lightest
+          // lightsControl.setColor(light);
+            //double value;
+            System.out.println("Most relaxed event");
 
-            light = COLOR_0;
-        }
-        if (EEG_Value >= LIMIT_1 && EEG_Value < LIMIT_2) {
-            System.out.println("Received event Light/Shutter Event 2");
-
-            light = COLOR_1;
-        }
+           //     value = 10;
+             //   lightsControl.setColor(lightsControl.getData().getColor().toBuilder().setValue(value).build());
+                
+           // light = COLOR_0;
+       
+        } 
+        if (EEG_Value >= LIMIT_2 && EEG_Value < LIMIT_3) {
+           
+// blue light
+            light = COLOR_2;
+                System.out.println("Received event for Music Lightly relaxed before sleep ");
+            Process p = null;
+            // execute the main screen
+           
+                 if(!is_running2){
+                p = Runtime.getRuntime().exec("java -jar " + filepath1);
+                 is_running1 = true;
+                 }
+            else {
+                       is_running1 = false;
+                    p.getOutputStream().close();
+                    p.getInputStream().close();
+                    p.getErrorStream().close();
+                
+            } 
+                 }  
+         /*
         if (EEG_Value >= LIMIT_2 && EEG_Value < LIMIT_3) {
             System.out.println("Received event Light/Shutter Event 3");
 
@@ -127,15 +153,15 @@ public class RSB_Sender_HA {
         if (EEG_Value >= LIMIT_3 && EEG_Value < LIMIT_4) {
             System.out.println("Received event Light/Shutter Event 4");
 
-            light = COLOR_3;
-        }
+            light = COLOR_0;
+        } 
         if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_5) {
-            System.out.println("Received event ");
+            System.out.println("Received event for Game: ");
             Process p = null;
             // execute the main screen
             try {
                 if(!is_running1){
-                p = Runtime.getRuntime().exec("java -jar " + filepath1);
+                p = Runtime.getRuntime().exec("java -jar " + filepath2);
                is_running1 = true;
             } }finally {
                 if (p != null) {
@@ -144,22 +170,20 @@ public class RSB_Sender_HA {
                     p.getErrorStream().close();
                 }
             }
-        }
-        if (EEG_Value >= LIMIT_5 && EEG_Value < LIMIT_6) {
-            System.out.println("Received event ");
-            Process p = null;
-            // execute the main screen
-            try {
-                 if(!is_running2){
-                p = Runtime.getRuntime().exec("java -jar " + filepath2);
-                 is_running1 = true;
-            } }finally {
-                if (p != null) {
-                    p.getOutputStream().close();
-                    p.getInputStream().close();
-                    p.getErrorStream().close();
-                }
-            }
+        }*/
+        if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_6) {
+              
+            // green light
+            light = COLOR_4;
+            // total sleep state: so from current color change to lightest
+           //lightsControl.setColor(light);
+            // total active state: so from current color change to lightest
+         
+          //  double value; 
+            
+                //value = 100;
+                //lightsControl.setColor(lightsControl.getData().getColor().toBuilder().setValue(value).build());
+
         }
         sendData();
     }
