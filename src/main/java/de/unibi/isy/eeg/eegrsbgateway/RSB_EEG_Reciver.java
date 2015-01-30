@@ -25,7 +25,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
 
     @Override
     public void handleEvent(final Event event) {
-         
+
         EEG_Value = event.getData();
 
         // convert the object to Integer for the function
@@ -49,25 +49,25 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
     /**
      * The scope for EEG Integer Value
      */
+
    public static String scope = "/UBiCI/string/alphabeta/";
    //  public static String scope = "/eeg/result";
     public static String filepath3 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
        
     public static void main(final String[] args) throws Throwable {
+
+
         //Device code import        
         JPService.setApplicationName("DeviceManager");
         JPService.registerProperty(JPHardwareSimulationMode.class);
         JPService.parseAndExitOnError(args);
         Process p = null;
         eeg n = new eeg();
-        
-        
-        
 
         // execute the main screen
         try {
             p = Runtime.getRuntime().exec("java -jar " + filepath3);
-            
+
         } finally {
             if (p != null) {
                 p.getOutputStream().close();
@@ -76,7 +76,6 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
             }
         }
 
-                
         // Get a factory instance to create new RSB objects.
         final Factory factory = Factory.getInstance();
 
@@ -101,17 +100,17 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
         }
     }
 
-
-
 }
-class eeg{
-  public eeg(){
-      new DALService(new eeg.DeviceInitilizer()).activate();
-        new DeviceViewerFrame().setVisible(true);
-        
 
-  }
- class DeviceInitilizer extends DALService.DeviceInitializer {
+class eeg {
+
+    public eeg() {
+        new DALService(new eeg.DeviceInitilizer()).activate();
+        new DeviceViewerFrame().setVisible(true);
+
+    }
+
+    class DeviceInitilizer extends DALService.DeviceInitializer {
 
         @Override
         public void initDevices(DALRegistry registry) {
@@ -122,5 +121,5 @@ class eeg{
                 Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    } 
+    }
 }
