@@ -9,6 +9,7 @@ import de.citec.dal.service.DALRegistry;
 import de.citec.dal.util.DALException;
 import de.citec.jps.core.JPService;
 import de.citec.jps.properties.JPHardwareSimulationMode;
+import static de.unibi.isy.eeg.eegrsbgateway.RSB_Sender_HA.is_running2;
 import java.io.IOException;
 import rsb.AbstractEventHandler;
 import rsb.Event;
@@ -16,33 +17,71 @@ import rsb.Factory;
 import rsb.Listener;
 import java.util.logging.Level;
 import java.lang.Double;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import rsb.RSBException;
 
 public class RSB_EEG_Reciver extends AbstractEventHandler {
    
-    RSB_Sender_HA ha;
+    RSB_Sender_HA ha = new RSB_Sender_HA();
+    
 
     public Object EEG_Value;
     public Double Val;
+    public Double Vall;
+    public static int counter = 0;
+    public static boolean is_running1 = false;
+
+    double average = 0.0;
+    
+    private List<Double> values = new ArrayList<Double>();
+    
   
+    public double getSum() {
+         double sum = 0; 
+         //for (Double Val:values)
+         for (int i = 0;  i < values.size(); i++)
+             sum = sum + values.get(i);
+         return sum;
+    }
+
+    public int getCount()
+    {
+        return values.size();
+    }
+
+    public void addValue(Double value)
+    {
+        values.add(Val);
+    }
+
+    public Double getAverage()
+    {
+        return getSum()/getCount();
+    }
+
  @Override
     public void handleEvent(final Event event) {
-        
+
         EEG_Value = event.getData();
+        counter++;
         Val = Double.valueOf((String) EEG_Value);
-        
-        ha = new RSB_Sender_HA();
-        ha.setEEG_Value(Val);
-        try { 
-            ha.dec();
-        } catch (IOException | RSBException | DALException ex) {
-            Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
+        addValue(Val);
+        if (counter == 25) {
+            Vall = getAverage();
+            ha.setEEG_Value(Vall);
+            try {
+                ha.decision();
+                counter = 0;
+                values.clear();
+            } catch (IOException | RSBException | DALException ex) {
+                Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Sent Val" + Vall);
         }
-        System.out.println("Sent Val" + Val);
-        }
-    
-       
+    }
+      
     
     /**
      * The scope for EEG Integer Value
@@ -60,19 +99,19 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
         JPService.registerProperty(JPHardwareSimulationMode.class);
         JPService.parseAndExitOnError(args);
         
-        eeg n = new eeg();
+        eeg n = new eeg(); 
 
         // execute the main screen
         Process p = null;
-        try {
+         if (!is_running1){
             p = Runtime.getRuntime().exec("java -jar " + filepath3);
-
-        } finally {
-            if (p != null) {
+            is_running1 = true;
+        } else {
+           
                 p.getOutputStream().close();
                 p.getInputStream().close();
                 p.getErrorStream().close();
-            }
+ 
         }
 
         // Get a factory instance to create new RSB objects.

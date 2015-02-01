@@ -47,12 +47,11 @@ double end = 2.3;
          //note a single Random object is reused here
    
      
-      String value = "0.5";
-     
-    for (int i=1;i<10;i++){
+     String value = "0.5";
+      
      informer.send(value);
-     value = value + 0.1;
-    }
+     
+    
         // As there is no explicit removal model in java, always manually
         // deactivate the informer if it is not needed anymore
         informer.deactivate();
