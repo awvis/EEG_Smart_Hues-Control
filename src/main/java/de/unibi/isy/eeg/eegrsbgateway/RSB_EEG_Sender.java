@@ -5,6 +5,7 @@
  */
 package de.unibi.isy.eeg.eegrsbgateway;
 
+import java.util.Random;
 import rsb.Factory;
 import rsb.Informer;
 
@@ -15,7 +16,7 @@ import rsb.Informer;
 public class RSB_EEG_Sender {
 
     //String value = 12;
-    public static String scope = "/eeg/result";
+    public static String scope = "/UBiCI/string/alphabeta/";
 
     public void setScope(String val) {
         scope = val;
@@ -26,7 +27,9 @@ public class RSB_EEG_Sender {
     }
 
     public static void main(final String[] args) throws Throwable {
-         // Get remote server object to call exposed request methods of
+double start = 0.7;
+double end = 2.3;        
+// Get remote server object to call exposed request methods of
         // participants
 
         // Get a factory instance to create RSB objects.
@@ -41,9 +44,15 @@ public class RSB_EEG_Sender {
         // automatically creates an appropriate event internally.
         //String val = Integer.toString(value);
         //Object val = (Object)value;
-
-        String value = "0.75";
-        informer.send(value);
+         //note a single Random object is reused here
+   
+     
+      String value = "0.5";
+     
+    for (int i=1;i<10;i++){
+     informer.send(value);
+     value = value + 0.1;
+    }
         // As there is no explicit removal model in java, always manually
         // deactivate the informer if it is not needed anymore
         informer.deactivate();

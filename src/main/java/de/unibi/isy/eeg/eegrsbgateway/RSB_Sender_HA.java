@@ -21,6 +21,9 @@ import rsb.*;
 import java.io.IOException;
 import java.lang.Double;
 import java.lang.Runtime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import rst.homeautomation.AmbientLightType;
@@ -45,25 +48,50 @@ public class RSB_Sender_HA {
      * Decision making limit values for home automation
      */
     public final static double LIMIT_0 = 0.70;
-    public final static double LIMIT_1 = 0.99; //0.7 - 1.0 sleep
+    public final static double LIMIT_1 = 0.99; //0.7 - 1.0 Sleep State ********
     public final static double LIMIT_2 = 1.00;
-    public final static double LIMIT_3 = 1.22;
-    public final static double LIMIT_4 = 1.23; // 1.0 1.3 active
-    public final static double LIMIT_5 = 1.25;
-    public final static double LIMIT_6 = 2.30;
+    public final static double LIMIT_3 = 1.24; // 1.0 1.24 Concentrated ********
+    public final static double LIMIT_4 = 1.25; 
+    public final static double LIMIT_5 = 2.30; // 1.25 2.30 Hyper Active *******
+
+    
 
     private final AmbientLightRemote lightsControl;
 
+    public String filepath1 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
+    public String filepath2 = "/Users/viswa/NetBeansProjects/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
+   
     //external jar filepaths
 
-    public String filepath1 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
-    public String filepath2 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
+    public String filepath3 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
+    public String filepath4 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
    
     //boolean for java opening
-    public static boolean is_running1 = false;
-    public static boolean is_running2 = false;
+    public static boolean is_running1 = true;
+    public static boolean is_running2 = true;
 
+   // declarations for avergae
+     RSB_Sender_HA m;
+    public Double Vall;
+    
+    public int count = 0;
+    
+    double average = 0.0;
    
+    public int x;
+ 
+    public List<Double> values = 
+         Collections.synchronizedList(new ArrayList<Double>());
+    
+    
+    public Double getAvg()
+    {
+        double sum = 0; 
+        double avg;
+         sum = sum + EEG_Value;
+         avg = sum/x;
+         return avg;
+    }
     
     public RSB_Sender_HA() {
 
@@ -72,21 +100,7 @@ public class RSB_Sender_HA {
         lightsControl.init(new Scope(SCOPE_LIGHTS));
 
         lightsControl.activate();
-
-        lightsControl.addObserver(new Observer<AmbientLightType.AmbientLight>() {
-
-            @Override
-            public void update(Observable<AmbientLightType.AmbientLight> source, AmbientLightType.AmbientLight data) throws Exception {
-                System.out.println("color change:" + data.getColor());
-                //data.getState().getState;
-            }
-        });
-        /*  try {
-         lightsControl.setColor(lightsControl.getData().getColor().toBuilder().setValue(10).build());
-         } catch (DALException ex) {
-         Logger.getLogger(RSB_Sender_HA.class.getName()).log(Level.SEVERE, null, ex);
-         } */
-    }
+        }
 
     /**
      * Integer EEG value after processing of EEG data for decision And its set
@@ -95,98 +109,92 @@ public class RSB_Sender_HA {
     private double EEG_Value;
 
     public void setEEG_Value(Double Val) {
+     
         EEG_Value = Val;
-    }
-
-    public double getEEG_Value() {
-        return EEG_Value;
+      values.add(Val);
+    
     }
      
         
-
+   public void dec() throws IOException, RSBException, DALException {
+   
+        
+        x = values.size();
+        if(x==2){
+        System.out.println("inside if loop");
+        Vall =  m.getAvg();
+        m.decision();
+        values.clear();
+   }else{
+        System.out.println("Not in array");
+        System.out.println("Avg "+Vall);
+        System.out.println("Count"+x);
+        
+        } 
+   }
+   
     /**
-     * function for making decision on the basis of eeg integer value
      *
      * @throws java.io.IOException
-     * @throws java.lang.InterruptedException
      * @throws rsb.RSBException
      * @throws de.citec.dal.util.DALException
      */
-    public void decision() throws IOException, InterruptedException, RSBException, DALException {
-        
 
-        if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_2) {
-            //yellow
+    public void decision() throws IOException, RSBException, DALException {
+        if (Vall >= LIMIT_0 && Vall < LIMIT_2) {
+            
+        //pink - //0.7 - 1.0 Sleep State ********
             
         light = COLOR_0;
-            // total sleep state: so from current color change to lightest
-          // lightsControl.setColor(light);
-            //double value;
+            
             System.out.println("Most relaxed event");
-
-           //     value = 10;
-             //   lightsControl.setColor(lightsControl.getData().getColor().toBuilder().setValue(value).build());
-                
-           // light = COLOR_0;
        
         } 
-        if (EEG_Value >= LIMIT_2 && EEG_Value < LIMIT_3) {
+        if (Vall >= LIMIT_2 && Vall < LIMIT_3) {
            
-// blue light
+        // blue light - // 1.0 1.24 Concentrated *******
+            
             light = COLOR_2;
-                System.out.println("Received event for Music Lightly relaxed before sleep ");
+                System.out.println("Received event for Music Lightly relaxed before Sleep ");
             Process p = null;
             // execute the main screen
            
-                 if(!is_running2){
+                if(is_running1==true){
                 p = Runtime.getRuntime().exec("java -jar " + filepath1);
-                 is_running1 = true;
+                is_running1 = false;
                  }
             else {
-                       is_running1 = false;
+                   
                     p.getOutputStream().close();
                     p.getInputStream().close();
                     p.getErrorStream().close();
                 
             } 
                  }  
-         /*
-        if (EEG_Value >= LIMIT_2 && EEG_Value < LIMIT_3) {
-            System.out.println("Received event Light/Shutter Event 3");
-
-            light = COLOR_2;
-        }
-        if (EEG_Value >= LIMIT_3 && EEG_Value < LIMIT_4) {
-            System.out.println("Received event Light/Shutter Event 4");
-
-            light = COLOR_0;
-        } 
-        if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_5) {
-            System.out.println("Received event for Game: ");
+        
+        if (Vall >= LIMIT_4 && Vall < LIMIT_5) {
+              
+        // green light - // 1.25 2.30 Hyper Active *******
+            
+            light = COLOR_4;
+             System.out.println("Received event for Game: ");
             Process p = null;
             // execute the main screen
-            try {
-                if(!is_running1){
+           
+                if(is_running1==true){
                 p = Runtime.getRuntime().exec("java -jar " + filepath2);
-               is_running1 = true;
-            } }finally {
-                if (p != null) {
+                is_running1 = false;
+             }
+                else {
+             
                     p.getOutputStream().close();
                     p.getInputStream().close();
                     p.getErrorStream().close();
-                }
+               
             }
-        }*/
-        if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_6) {
-              
-            // green light
-            light = COLOR_4;
             // total sleep state: so from current color change to lightest
-           //lightsControl.setColor(light);
+            //lightsControl.setColor(light);
             // total active state: so from current color change to lightest
-         
-          //  double value; 
-            
                 //value = 100;
                 //lightsControl.setColor(lightsControl.getData().getColor().toBuilder().setValue(value).build());
 
@@ -197,7 +205,8 @@ public class RSB_Sender_HA {
     /**
      * Scope for the Intelligent apartment automation system
      */
-    String SCOPE_LIGHTS = "/home/amilab/ambientlight/testlight/";
+   // String SCOPE_LIGHTS = "/home/amilab/ambientlight/testlight/";
+     String SCOPE_LIGHTS = "/home/ambientlight/testlight/";
 
     /**
      * Function to send data via RSB to Automate Intelligent apartment
