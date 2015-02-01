@@ -6,8 +6,10 @@ import de.citec.dal.data.Location;
 import de.citec.dal.exception.RSBBindingException;
 import de.citec.dal.hal.devices.philips.PH_Hue_E27Controller;
 import de.citec.dal.service.DALRegistry;
+import de.citec.dal.util.DALException;
 import de.citec.jps.core.JPService;
 import de.citec.jps.properties.JPHardwareSimulationMode;
+import java.io.IOException;
 import rsb.AbstractEventHandler;
 import rsb.Event;
 import rsb.Factory;
@@ -15,61 +17,90 @@ import rsb.Listener;
 import java.util.logging.Level;
 import java.lang.Double;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
+
+
 import java.util.logging.Logger;
+import rsb.RSBException;
 
 public class RSB_EEG_Reciver extends AbstractEventHandler {
-
+    RSB_EEG_Reciver m;
     RSB_Sender_HA ha;
 
     public Object EEG_Value;
+    public Double Vall;
     public Double Val;
-    private double currentAverage = 0d;
-    private final List<Double> vals = Collections
-        .synchronizedList(new ArrayList<Double>());
+    public int count = 0;
+    
+    double average = 0.0;
+    public static int counter = 0;
+    
+    private List<Double> values;
 
-    @Override
+    public RSB_EEG_Reciver()
+    {
+        values = new ArrayList<Double>();
+    }
+
+    public double getSum() {
+         double sum = 0; 
+         for (Double i:values)
+             sum = sum + i;
+         return sum;
+    }
+
+    public int getCount()
+    {
+        return values.size();
+    }
+
+    public void addValue(Double value)
+    {
+        values.add(Vall);
+    }
+
+    public Double getAverage()
+    {
+        return getSum()/getCount();
+    }
+ @Override
     public void handleEvent(final Event event) {
         
-        // average
-        
-
         EEG_Value = event.getData();
-
-        // convert the object to Integer for the function
-        Val = Double.valueOf((String) EEG_Value);
-/*
-try {
-    synchronized (this.vals) {
-        this.vals.add(Val);
-        this.currentAverage = 0d;
-
-        for (Double Val : this.vals) {
-            this.currentAverage += Val;       
-        }
-
-        this.currentAverage /= this.vals.size();
-    }}finally{
-            System.out.println("Average");
-        } */
-
-
-
-        System.out.println("Received Viswa " + Val);
+       
+        counter++;
+   
+        Vall = Double.valueOf((String) EEG_Value);
+            
+        m.addValue(Vall);
+        
+            if(counter==25){
+          Val =  m.getAverage();
         // Send Value to the other side
         ha = new RSB_Sender_HA();
         ha.setEEG_Value(Val);
-
-        // print out the value after the conversion
-        try {
-            ha.decision();
-            System.out.println("Received" + Val);
-        } catch (Throwable e) {
-            System.out.println("Error in sending to Home Automation" + e);
+            try {
+                ha.decision();
+                counter = 0; 
+                values.clear();
+            } catch (IOException ex) {
+                Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RSBException ex) {
+                Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (DALException ex) {
+                Logger.getLogger(RSB_EEG_Reciver.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+        System.out.println("Received" + Val);
         }
-
-    } 
+        }
+ 
+    
+ 
+    
     
 
 
@@ -77,8 +108,8 @@ try {
      * The scope for EEG Integer Value
      */
 
-   public static String scope = "/UBiCI/string/alphabeta/";
-   //  public static String scope = "/eeg/result";
+    public static String scope = "/UBiCI/string/alphabeta/";
+    //  public static String scope = "/eeg/result";
     public static String filepath3 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoBrainAtWork/applet/BrawoBrainAtWork.jar";
        
     public static void main(final String[] args) throws Throwable {

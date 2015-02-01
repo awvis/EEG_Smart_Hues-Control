@@ -59,9 +59,12 @@ public class RSB_Sender_HA {
     public String filepath1 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoMusicPlayer/applet/BrawoMusicPlayer.jar";
     public String filepath2 = "/home/brawo/workspace/eegrsbgateway/src/jars/BrawoRelaxGame/applet/BrawoRelaxGame.jar";
    
+    //boolean for java opening
     public static boolean is_running1 = false;
     public static boolean is_running2 = false;
 
+   
+    
     public RSB_Sender_HA() {
 
         lightsControl = new AmbientLightRemote();
@@ -98,6 +101,8 @@ public class RSB_Sender_HA {
     public double getEEG_Value() {
         return EEG_Value;
     }
+     
+        
 
     /**
      * function for making decision on the basis of eeg integer value
@@ -108,6 +113,7 @@ public class RSB_Sender_HA {
      * @throws de.citec.dal.util.DALException
      */
     public void decision() throws IOException, InterruptedException, RSBException, DALException {
+        
 
         if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_2) {
             //yellow
