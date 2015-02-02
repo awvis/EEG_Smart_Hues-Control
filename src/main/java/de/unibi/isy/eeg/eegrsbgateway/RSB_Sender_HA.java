@@ -48,9 +48,9 @@ public class RSB_Sender_HA {
      * Decision making limit values for home automation
      */
     public final static double LIMIT_0 = 0.70;
-    public final static double LIMIT_1 = 0.99; //0.7 - 1.0 Sleep State ********
-    public final static double LIMIT_2 = 1.00;
-    public final static double LIMIT_3 = 1.24; // 1.0 1.24 Concentrated ********
+    public final static double LIMIT_1 = 0.93; //0.7 - 1.0 Sleep State ********
+    public final static double LIMIT_2 = 0.95;
+    public final static double LIMIT_3 = 0.99; // 1.0 1.24 Concentrated ********
     public final static double LIMIT_4 = 1.25;
     public final static double LIMIT_5 = 2.30; // 1.25 2.30 Hyper Active *******
 
@@ -80,6 +80,8 @@ public class RSB_Sender_HA {
      * and get data Functions
      */
     public double EEG_Value;
+     Process p = null;
+     Process p1 = null;
 
     public void setEEG_Value(Double Val) {
         EEG_Value = Val;
@@ -92,12 +94,20 @@ public class RSB_Sender_HA {
      * @throws de.citec.dal.util.DALException
      */
     public void decision() throws IOException, RSBException, DALException {
-        if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_2) {
+        if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_1) {
 
         //pink - //0.7 - 1.0 Sleep State ********
             light = COLOR_0;
 
             System.out.println("Most relaxed event");
+            if(p!=null) {
+            p.destroy();
+            
+            }
+              if(p1!=null) {
+          
+            p1.destroy();
+            }
 
         }
         if (EEG_Value >= LIMIT_2 && EEG_Value < LIMIT_3) {
@@ -105,9 +115,11 @@ public class RSB_Sender_HA {
         // blue light - // 1.0 1.24 Concentrated *******
             light = COLOR_2;
             System.out.println("Received event for Music Lightly relaxed before Sleep ");
-            Process p = null;
+           
             // execute the main screen
-
+            if(p1!=null){
+            p1.destroy();
+            }
             if (!is_running1) {
                 p = Runtime.getRuntime().exec("java -jar " + filepath1);
                 is_running1 = true;
@@ -120,24 +132,29 @@ public class RSB_Sender_HA {
             }
         }
 
-        if (EEG_Value >= LIMIT_4 && EEG_Value < LIMIT_5) {
+        if (EEG_Value >= LIMIT_3 && EEG_Value < LIMIT_5) {
 
         // green light - // 1.25 2.30 Hyper Active *******
             light = COLOR_4;
             System.out.println("Received event for Game: ");
-            Process p = null;
+            
             // execute the main screen
+           
 
             if (!is_running2) {
-                p = Runtime.getRuntime().exec("java -jar " + filepath2);
+                p1 = Runtime.getRuntime().exec("java -jar " + filepath2);
                 is_running2 = true;
             } else {
 
-                p.getOutputStream().close();
-                p.getInputStream().close();
-                p.getErrorStream().close();
+                p1.getOutputStream().close();
+                p1.getInputStream().close();
+                p1.getErrorStream().close();
 
             }
+             if(p!=null) {
+                  p.destroy();
+             
+             }
             // total sleep state: so from current color change to lightest
             //lightsControl.setColor(light);
             // total active state: so from current color change to lightest

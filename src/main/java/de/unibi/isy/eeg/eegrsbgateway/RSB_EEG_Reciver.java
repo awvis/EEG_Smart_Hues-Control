@@ -68,7 +68,7 @@ public class RSB_EEG_Reciver extends AbstractEventHandler {
         counter++;
         Val = Double.valueOf((String) EEG_Value);
         addValue(Val);
-        if (counter == 25) {
+        if (counter == 6) {
             Vall = getAverage();
             ha.setEEG_Value(Vall);
             try {
