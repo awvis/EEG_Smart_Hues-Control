@@ -13,39 +13,61 @@
     </properties>
     
     <dependencies>
+      
         <dependency> 
-            <groupId>de.citec.dal</groupId>
-            <artifactId>service</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
-        </dependency> 
-        <dependency> 
-            <groupId>de.citec.dal</groupId>
-            <artifactId>remote</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
-        </dependency> 
-        <dependency> 
-            <groupId>de.citec.dal</groupId>
-            <artifactId>visual</artifactId>
+            <groupId>de.citec</groupId>
+            <artifactId>dal.remote</artifactId>
             <version>0.1.0-SNAPSHOT</version>
         </dependency> 
     </dependencies>
     
     
     <build>
-  <plugins>
-    <plugin>
-    <artifactId>maven-assembly-plugin</artifactId>
-      <configuration>
-        <archive>
-          <manifest>
-            <mainClass>com.javavids.main.Main</mainClass>
-          </manifest>
-        </archive>
-        <descriptorRefs>
-          <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.javavids.main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>1.8.1</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <programs>
+                        <program>
+                            <mainClass>de.unibi.isy.eeg.eegrsbgateway.RSB_EEG_Reciver</mainClass>
+                            <id>ha-reciver</id>
+                            <platforms>
+                                <platform>unix</platform>
+                            </platforms>
+                        </program>
+                        <program>
+                            <mainClass>de.unibi.isy.eeg.eegrsbgateway.RSB_Sender_HA</mainClass>
+                            <id>ha-sender</id>
+                            <platforms>
+                                <platform>unix</platform>
+                            </platforms>
+                        </program>
+                    </programs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

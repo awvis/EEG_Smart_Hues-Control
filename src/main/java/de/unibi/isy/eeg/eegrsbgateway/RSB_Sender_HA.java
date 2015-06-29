@@ -5,28 +5,16 @@ package de.unibi.isy.eeg.eegrsbgateway;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import de.citec.dal.DALService;
-import de.citec.dal.DeviceViewerFrame;
-import de.citec.dal.data.Location;
-import de.citec.dal.exception.RSBBindingException;
-import de.citec.dal.hal.al.AmbientLightRemote;
-import de.citec.dal.hal.al.RollershutterRemote;
-import de.citec.dal.hal.devices.philips.PH_Hue_E27Controller;
-import de.citec.dal.service.DALRegistry;
-import de.citec.dal.util.DALException;
-import de.citec.dal.util.Observable;
-import de.citec.dal.util.Observer;
+import de.citec.dal.remote.unit.AmbientLightRemote;
+import de.citec.dm.remote.DeviceRegistryRemote;
+import de.citec.jul.exception.CouldNotPerformException;
+import de.citec.jul.exception.InstantiationException;
 import java.awt.Color;
-import rsb.*;
 import java.io.IOException;
-import java.lang.Double;
-import java.lang.Runtime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import rst.homeautomation.AmbientLightType;
+import rsb.RSBException;
+import rsb.Scope;
+import rst.homeautomation.device.DeviceConfigType;
+import rst.homeautomation.unit.UnitConfigType;
 
 public class RSB_Sender_HA {
 
@@ -54,6 +42,7 @@ public class RSB_Sender_HA {
     public final static double LIMIT_4 = 1.25;
     public final static double LIMIT_5 = 2.30; // 1.25 2.30 Hyper Active *******
 
+    private final DeviceRegistryRemote deviceRegistryRemote;
     private final AmbientLightRemote lightsControl;
 
   
@@ -66,13 +55,19 @@ public class RSB_Sender_HA {
     public static boolean is_running2 = false;
 
 
-    public RSB_Sender_HA() {
-
+    public RSB_Sender_HA() throws CouldNotPerformException, InterruptedException {
+ 
+        deviceRegistryRemote = new DeviceRegistryRemote();
+        deviceRegistryRemote.init();
+        deviceRegistryRemote.activate();
+        
+        UnitConfigType.UnitConfig unitConfig = deviceRegistryRemote.getUnitConfigById("/ambientlight/mainlight/");
+        
         lightsControl = new AmbientLightRemote();
-
-        lightsControl.init(new Scope(SCOPE_LIGHTS));
-
+        lightsControl.init(unitConfig);
         lightsControl.activate();
+        
+        lightsControl.setColor(Color.RED);
     }
 
     /**
@@ -93,7 +88,7 @@ public class RSB_Sender_HA {
      * @throws rsb.RSBException
      * @throws de.citec.dal.util.DALException
      */
-    public void decision() throws IOException, RSBException, DALException {
+    public void decision() throws IOException, RSBException, CouldNotPerformException {
         if (EEG_Value >= LIMIT_0 && EEG_Value < LIMIT_1) {
 
         //pink - //0.7 - 1.0 Sleep State ********
@@ -122,7 +117,7 @@ public class RSB_Sender_HA {
             }
             if (!is_running1) {
                 p = Runtime.getRuntime().exec("java -jar " + filepath1);
-                is_running1 = true;
+                //is_running1 = true;
             } else {
 
                 p.getOutputStream().close();
@@ -143,7 +138,7 @@ public class RSB_Sender_HA {
 
             if (!is_running2) {
                 p1 = Runtime.getRuntime().exec("java -jar " + filepath2);
-                is_running2 = true;
+               // is_running2 = true;
             } else {
 
                 p1.getOutputStream().close();
@@ -176,7 +171,7 @@ public class RSB_Sender_HA {
      * @throws rsb.RSBException
      * @throws de.citec.dal.util.DALException
      */
-    public void sendData() throws RSBException, DALException {
+    public void sendData() throws RSBException, CouldNotPerformException {
         System.out.println("sendData");
         // Get a factory instance to create RSB objects.
         //brightness

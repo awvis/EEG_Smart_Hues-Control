@@ -47,7 +47,7 @@ double end = 2.3;
          //note a single Random object is reused here
    
      
-     String value = "0.5";
+     String value = "6";
       
      informer.send(value);
      
